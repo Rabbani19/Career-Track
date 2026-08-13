@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerTrack - Job Application & Interview Management</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0e2e;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* ========== NAVBAR ========== */
+        .navbar-custom {
+            background: rgba(10, 14, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand-text {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-btn-login {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-btn-login:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #667eea;
+            color: #fff;
+        }
+
+        .nav-btn-register {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: #fff;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0e2e 0%, #0d1442 40%, #0a1628 100%);
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Glow Effects */
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -200px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(118, 75, 162, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        /* Badge */
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #a78bfa;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        /* Hero Title */
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .hero-title .white-text {
+            color: #ffffff;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, #00d2ff, #7b2ff7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-title .underline-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title .underline-text::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* Hero Description */
+        .hero-description {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 32px;
+            max-width: 480px;
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .feature-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* CTA Buttons */
+        .btn-get-started {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-get-started:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            color: #fff;
+        }
+
+        .btn-login-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-login-outline:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        /* ========== HERO IMAGE ========== */
+        .hero-image-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-image-glow {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 0;
+        }
+
+        .hero-main-image {
+            width: 100%;
+            max-width: 680px;
+            position: relative;
+            z-index: 1;
+            border-radius: 20px;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 30px 60px rgba(102, 126, 234, 0.3));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Floating Stat Cards */
+        .stat-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 2;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .stat-card-1 {
+            top: 15%;
+            left: -10px;
+            animation-delay: 0s;
+        }
+
+        .stat-card-2 {
+            bottom: 20%;
+            left: -20px;
+            animation-delay: 1s;
+        }
+
+        .stat-card-3 {
+            top: 10%;
+            right: 20px;
+            animation-delay: 2s;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .stat-icon-purple { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .stat-icon-blue { background: linear-gradient(135deg, #00d2ff, #0072ff); }
+        .stat-icon-green { background: linear-gradient(135deg, #00c853, #00897b); }
+
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 2px;
+        }
+
+        /* ========== FEATURES SECTION ========== */
+        .features-section {
+            padding: 100px 0;
+            background: linear-gradient(180deg, #0a0e2e 0%, #080b20 100%);
+        }
+
+        .section-badge {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: #a78bfa;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            color: rgba(255,255,255,0.55);
+            font-size: 1rem;
+            max-width: 500px;
+            margin: 0 auto 60px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 36px 28px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            background: rgba(102, 126, 234, 0.08);
+            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.15);
+        }
+
+        .feature-card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h5 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: rgba(255,255,255,0.55);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* ========== STATS SECTION ========== */
+        .stats-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.95rem;
+            margin-top: 6px;
+        }
+
+        /* ========== CTA SECTION ========== */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #0a0e2e 0%, #0d1442 100%);
+            text-align: center;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 30px;
+            padding: 80px 40px;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer-custom {
+            background: #060814;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 30px 0;
+        }
+
+        .footer-text {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.88rem;
+        }
+
+        /* ========== SCROLL ANIMATIONS ========== */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.7s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .hero-title { font-size: 2.8rem; }
+            .hero-main-image { max-width: 100%; }
+            .stat-card { display: none; }
+            .hero-image-wrapper { margin-top: 50px; }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title { font-size: 2.2rem; }
+            .section-title { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar-custom">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="navbar-brand-text">
+            <i class="bi bi-briefcase-fill me-2"></i>CareerTrack
+        </div>
+        <div class="d-flex gap-3 align-items-center">
+            <a href="/login" class="nav-btn-login">Login</a>
+            <a href="/register" class="nav-btn-register">Get Started</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ========== HERO SECTION ========== -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100 py-5">
+
+            <!-- Left Content -->
+            <div class="col-lg-6 animate__animated animate__fadeInLeft">
+
+                <!-- Badge -->
+                <div class="hero-badge">
+                    <i class="bi bi-briefcase-fill"></i>
+                    Your Career, Our Priority
+                </div>
+
+                <!-- Title -->
+                <h1 class="hero-title">
+                    <span class="white-text">Track. Prepare.<br></span>
+                    <span class="gradient-text underline-text">Succeed.</span>
+                </h1>
+
+                <!-- Description -->
+                <p class="hero-description">
+                    Manage your job applications, interviews and career progress — all in one place.
+                </p>
+
+                <!-- Features List -->
+                <ul class="feature-list">
+                    <li>
+                        <div class="feature-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        Track All Applications
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        Schedule & Organize Interviews
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <i class="bi bi-bar-chart-line"></i>
+                        </div>
+                        Analyze Your Progress
+                    </li>
+                    <li>
+                        <div class="feature-icon">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                        </div>
+                        Manage Important Documents
+                    </li>
+                </ul>
+
+                <!-- CTA Buttons -->
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/register" class="btn-get-started">
+                        <i class="bi bi-plus-circle"></i>
+                        Get Started
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                    <a href="/login" class="btn-login-outline">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Login
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Image -->
+            <div class="col-lg-6 animate__animated animate__fadeInRight">
+                <div class="hero-image-wrapper">
+
+                    <!-- Glow Effect -->
+                    <div class="hero-image-glow"></div>
+
+                    <!-- Main Image -->
+                    <img src="/images/hero-image.png"
+                         alt="CareerTrack Dashboard"
+                         class="hero-main-image"
+                         onerror="this.style.display='none'">
+
+                    <!-- Floating Stat Card 1 -->
+                    <div class="stat-card stat-card-1">
+                        <div class="stat-icon stat-icon-purple">
+                            <i class="bi bi-briefcase-fill text-white"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">124+</div>
+                            <div class="stat-label">Applications Tracked</div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Stat Card 2 -->
+                    <div class="stat-card stat-card-2">
+                        <div class="stat-icon stat-icon-green">
+                            <i class="bi bi-check-circle-fill text-white"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">89%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Stat Card 3 -->
+                    <div class="stat-card stat-card-3">
+                        <div class="stat-icon stat-icon-blue">
+                            <i class="bi bi-calendar-check-fill text-white"></i>
+                        </div>
+                        <div>
+                            <div class="stat-number">48</div>
+                            <div class="stat-label">Interviews Scheduled</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ========== STATS SECTION ========== -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3 fade-up">
+                <div class="stats-number">500+</div>
+                <div class="stats-label">Active Users</div>
+            </div>
+            <div class="col-6 col-md-3 fade-up">
+                <div class="stats-number">2K+</div>
+                <div class="stats-label">Applications Tracked</div>
+            </div>
+            <div class="col-6 col-md-3 fade-up">
+                <div class="stats-number">800+</div>
+                <div class="stats-label">Interviews Managed</div>
+            </div>
+            <div class="col-6 col-md-3 fade-up">
+                <div class="stats-number">95%</div>
+                <div class="stats-label">Satisfaction Rate</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FEATURES SECTION ========== -->
+<section class="features-section">
+    <div class="container">
+        <div class="text-center">
+            <span class="section-badge">✨ Features</span>
+            <h2 class="section-title">Everything You Need to<br>Land Your Dream Job</h2>
+            <p class="section-subtitle">
+                Powerful tools to organize your job search, prepare for interviews, and track your career journey.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3 fade-up">
+                <div class="feature-card">
+                    <div class="feature-card-icon" style="background: linear-gradient(135deg, #667eea22, #764ba222); color: #667eea;">
+                        <i class="bi bi-collection-fill"></i>
+                    </div>
+                    <h5>Application Tracking</h5>
+                    <p>Keep all your job applications organized in one place with real-time status updates.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-up">
+                <div class="feature-card">
+                    <div class="feature-card-icon" style="background: linear-gradient(135deg, #00d2ff22, #0072ff22); color: #00d2ff;">
+                        <i class="bi bi-calendar2-week-fill"></i>
+                    </div>
+                    <h5>Interview Management</h5>
+                    <p>Schedule, track, and manage all your interviews with automated reminders.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-up">
+                <div class="feature-card">
+                    <div class="feature-card-icon" style="background: linear-gradient(135deg, #00c85322, #00897b22); color: #00c853;">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <h5>Analytics Dashboard</h5>
+                    <p>Visualize your job search progress with beautiful charts and insightful analytics.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3 fade-up">
+                <div class="feature-card">
+                    <div class="feature-card-icon" style="background: linear-gradient(135deg, #ff6b6b22, #ee5a2422); color: #ff6b6b;">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <h5>AI Interview Prep</h5>
+                    <p>Get AI-powered interview tips, mock questions, and personalized career advice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CTA SECTION ========== -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-box fade-up">
+            <span class="section-badge">🚀 Get Started Today</span>
+            <h2 class="section-title mt-3">Ready to Land Your<br>Dream Job?</h2>
+            <p class="section-subtitle mx-auto mb-5">
+                Join thousands of job seekers who use CareerTrack to organize their job search and ace their interviews.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="/register" class="btn-get-started">
+                    <i class="bi bi-rocket-takeoff"></i>
+                    Start For Free
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+                <a href="/login" class="btn-login-outline">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Login
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer-custom">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="navbar-brand-text" style="font-size: 1.3rem;">
+                    <i class="bi bi-briefcase-fill me-2"></i>CareerTrack
+                </div>
+                <p class="footer-text mt-2">Your Career, Our Priority</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p class="footer-text mb-0">
+                    © 2026 CareerTrack. Built with ❤️ for Job Seekers.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Scroll Animation Script -->
+<script>
+    // Scroll animation
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar-custom');
+        if (window.scrollY > 50) {
+            navbar.style.boxShadow = '0 4px 30px rgba(0,0,0,0.3)';
+        } else {
+            navbar.style.boxShadow = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

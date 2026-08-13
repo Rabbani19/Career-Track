@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Interviews - CareerTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="container mt-4 pb-5">
+
+    <!-- Page Header -->
+    <div class="page-header animate-fade-up">
+        <div class="page-header-title">
+            <h3>
+                <i class="fas fa-calendar-alt
+                          text-success me-2"></i>
+                Interviews
+            </h3>
+            <p>Manage your interview schedule</p>
+        </div>
+        <a href="/interviews/add" class="btn btn-success">
+            <i class="fas fa-plus me-2"></i>
+            Schedule Interview
+        </a>
+    </div>
+
+    <!-- Success Message -->
+    <div th:if="${successMessage}"
+         class="alert alert-success alert-dismissible
+                animate-fade-up">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close"
+                data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3 col-6 animate-fade-up delay-1">
+            <div class="card text-center p-3">
+                <div class="fw-bold fs-3 text-primary"
+                     th:text="${totalInterviews}">0</div>
+                <small class="text-muted fw-600">Total</small>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6 animate-fade-up delay-2">
+            <div class="card text-center p-3">
+                <div class="fw-bold fs-3"
+                     style="color:var(--info);"
+                     th:text="${#lists.size(
+                     interviews.?[status.name()
+                     == 'SCHEDULED'])}">0</div>
+                <small class="text-muted fw-600">Scheduled</small>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6 animate-fade-up delay-3">
+            <div class="card text-center p-3">
+                <div class="fw-bold fs-3"
+                     style="color:var(--success);"
+                     th:text="${#lists.size(
+                     interviews.?[status.name()
+                     == 'COMPLETED'])}">0</div>
+                <small class="text-muted fw-600">Completed</small>
+            </div>
+        </div>
+
+        <div class="col-md-3 col-6 animate-fade-up delay-4">
+            <div class="card text-center p-3">
+                <div class="fw-bold fs-3"
+                     style="color:var(--danger);"
+                     th:text="${#lists.size(
+                     interviews.?[status.name()
+                     == 'CANCELLED'])}">0</div>
+                <small class="text-muted fw-600">Cancelled</small>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Interviews List -->
+    <div class="card animate-fade-up">
+        <div class="card-body p-0">
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(interviews)}"
+                 class="empty-state">
+                <div class="empty-state-icon"
+                     style="background:rgba(0,212,170,0.1);
+                            color:var(--success);">
+                    <i class="fas fa-calendar-times"></i>
+                </div>
+                <h5>No Interviews Scheduled!</h5>
+                <p>Schedule your first interview</p>
+                <a href="/interviews/add"
+                   class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i>
+                    Schedule Interview
+                </a>
+            </div>
+
+            <!-- Table -->
+            <div th:if="${!#lists.isEmpty(interviews)}"
+                 class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                    <tr style="background:#f8f9ff;">
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">#</th>
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">Company</th>
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">Round</th>
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">Date & Time</th>
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">Mode</th>
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">Status</th>
+                        <th style="padding:15px 20px;
+                                       color:#888;font-size:12px;
+                                       text-transform:uppercase;
+                                       font-weight:600;
+                                       border:none;">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="interview, iter :
+                                     ${interviews}"
+                        style="border-bottom:1px solid #f5f5ff;
+                                   transition:all 0.2s ease;"
+                        onmouseover="this.style.background='#f8f9ff'"
+                        onmouseout="this.style.background='white'">
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;color:#888;
+                                       font-weight:600;"
+                            th:text="${iter.count}">
+                        </td>
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;">
+                            <div class="d-flex
+                                            align-items-center gap-2">
+                                <div style="width:38px;
+                                                height:38px;
+                                                background:rgba(0,212,170,0.1);
+                                                border-radius:10px;
+                                                display:flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                color:var(--success);
+                                                font-size:16px;">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold"
+                                         style="font-size:14px;"
+                                         th:text="${interview
+                                             .jobApplication
+                                             .companyName}">
+                                    </div>
+                                    <small class="text-muted"
+                                           th:text="${interview
+                                               .jobApplication
+                                               .jobRole}">
+                                    </small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;">
+                            <div class="fw-600"
+                                 style="font-size:14px;"
+                                 th:text="${interview.roundType ?: '-'}">
+                            </div>
+                            <small class="text-muted"
+                                   th:text="${interview.roundName ?: ''}">
+                            </small>
+                        </td>
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;">
+                            <div style="font-size:14px;"
+                                 th:text="${interview.interviewDate ?: '-'}">
+                            </div>
+                            <small class="text-muted"
+                                   th:text="${interview.interviewTime ?: ''}">
+                            </small>
+                        </td>
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;">
+                                <span th:if="${interview.mode != null}"
+                                      class="badge"
+                                      th:text="${interview.mode}"
+                                      th:classappend="${interview
+                                      .mode.name() == 'ONLINE'}
+                                      ? 'badge-applied' :
+                                      'badge-scheduled'">
+                                </span>
+                            <span th:if="${interview.mode == null}"
+                                  class="text-muted">-</span>
+                        </td>
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;">
+                                <span class="badge"
+                                      th:text="${interview.status}"
+                                      th:classappend="
+                                      ${interview.status.name()
+                                      == 'SCHEDULED'} ? 'badge-scheduled' :
+                                      ${interview.status.name()
+                                      == 'COMPLETED'} ? 'badge-completed' :
+                                      ${interview.status.name()
+                                      == 'CANCELLED'} ? 'badge-cancelled' :
+                                      'badge-in-review'">
+                                </span>
+                        </td>
+
+                        <td style="padding:18px 20px;
+                                       vertical-align:middle;
+                                       border:none;">
+                            <div class="d-flex gap-2">
+                                <a th:href="@{/interviews/{id}
+                                       (id=${interview.id})}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a th:href="@{/interviews/{id}/edit
+                                       (id=${interview.id})}"
+                                   class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form th:action="@{/interviews/{id}/delete
+                                          (id=${interview.id})}"
+                                      method="post"
+                                      style="display:inline;">
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm(
+                                                'Delete this interview?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
