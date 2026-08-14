@@ -23,9 +23,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ Added firstName & lastName
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
     @NotBlank(message = "Full name is required")
     @Column(name = "full_name", nullable = false)
     private String fullName;
+
+    // ✅ Added username
+    @Column(name = "username", unique = true)
+    private String username;
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is required")
@@ -71,9 +82,11 @@ public class User {
     @Builder.Default
     private Role role = Role.USER;
 
+    // ✅ Fixed: renamed isActive to active
+    // Lombok @Data generates setActive/isActive correctly
     @Column(name = "is_active")
     @Builder.Default
-    private Boolean isActive = true;
+    private Boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

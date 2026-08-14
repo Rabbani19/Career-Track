@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -20,19 +17,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // View Profile
+    // ✅ View Profile
     @GetMapping
     public String viewProfile(
             Authentication authentication,
             Model model) {
 
+        // ✅ authentication.getName() returns username
         User user = userService.getCurrentUser(
                 authentication.getName());
         model.addAttribute("user", user);
         return "user/profile";
     }
 
-    // Edit Profile
+    // ✅ Edit Profile
     @GetMapping("/edit")
     public String editProfile(
             Authentication authentication,
@@ -45,11 +43,9 @@ public class UserController {
         userDTO.setFullName(user.getFullName());
         userDTO.setPhone(user.getPhone());
         userDTO.setLocation(user.getLocation());
-        userDTO.setCurrentCompany(
-                user.getCurrentCompany());
+        userDTO.setCurrentCompany(user.getCurrentCompany());
         userDTO.setCurrentRole(user.getCurrentRole());
-        userDTO.setExperienceYears(
-                user.getExperienceYears());
+        userDTO.setExperienceYears(user.getExperienceYears());
         userDTO.setSkills(user.getSkills());
         userDTO.setLinkedinUrl(user.getLinkedinUrl());
         userDTO.setGithubUrl(user.getGithubUrl());
@@ -60,7 +56,7 @@ public class UserController {
         return "user/edit-profile";
     }
 
-    // Update Profile
+    // ✅ Update Profile
     @PostMapping("/edit")
     public String updateProfile(
             @ModelAttribute UserDTO userDTO,
@@ -74,7 +70,7 @@ public class UserController {
 
         redirectAttributes.addFlashAttribute(
                 "successMessage",
-                "Profile updated successfully!");
+                "✅ Profile updated successfully!");
 
         return "redirect:/profile";
     }

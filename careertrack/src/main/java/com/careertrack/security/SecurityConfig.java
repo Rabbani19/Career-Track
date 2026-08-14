@@ -5,8 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,11 +18,14 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    // ✅ REMOVED passwordEncoder Bean from here
+    // It already exists in AppConfig.java
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // ✅ Security Filter Chain
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    public SecurityFilterChain filterChain(
             HttpSecurity http) throws Exception {
 
         http
@@ -31,55 +33,58 @@ public class SecurityConfig {
                         // Public URLs
                         .requestMatchers(
                                 "/",
-                                "/register",
                                 "/login",
+                                "/register",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/webjars/**"
+                                "/static/**",
+                                "/webjars/**",
+                                "/error"
                         ).permitAll()
-                        // Admin URLs
-                        .requestMatchers("/admin/**")
-                        .hasRole("ADMIN")
-                        // All other URLs need login
+                        // All others need auth
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .defaultSuccessUrl("/dashboard", true)
-                        .failureUrl("/login?error=true")
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
+                        .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID", "remember-me")
                         .clearAuthentication(true)
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable());
+                .rememberMe(remember -> remember
+                        .userDetailsService(userDetailsService)
+                        .key("careertrack-secret-key")
+                        .tokenValiditySeconds(7 * 24 * 60 * 60)
+                        .rememberMeParameter("remember-me")
+                );
 
         return http.build();
     }
 
+    // ✅ Authentication Manager
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
+    public AuthenticationManager authManager(
+            HttpSecurity http) throws Exception {
 
-        // ✅ Spring Boot 4 - New Way
-        DaoAuthenticationProvider provider =
-                new DaoAuthenticationProvider(
-                        userDetailsService);
+        AuthenticationManagerBuilder builder =
+                http.getSharedObject(
+                        AuthenticationManagerBuilder.class);
 
-        provider.setPasswordEncoder(passwordEncoder);
+        builder
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
 
-        return provider;
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config)
-            throws Exception {
-        return config.getAuthenticationManager();
+        return builder.build();
     }
 }

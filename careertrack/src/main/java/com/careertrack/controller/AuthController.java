@@ -1,6 +1,7 @@
 package com.careertrack.controller;
 
 import com.careertrack.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,69 +16,66 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // ===== HOME PAGE =====
+    // ===== HOME =====
     @GetMapping("/")
     public String home() {
-        return "index";  // templates/index.html
+        return "index";
     }
 
-    // ===== LOGIN PAGE =====
+    // ===== LOGIN GET =====
     @GetMapping("/login")
     public String showLogin() {
-        return "auth/login";  // ✅ templates/auth/login.html
+        return "auth/login";
     }
 
-    // ===== REGISTER PAGE =====
+    // ===== REGISTER GET =====
     @GetMapping("/register")
     public String showRegister() {
-        return "auth/register";  // ✅ templates/auth/register.html
+        return "auth/register";
     }
 
-    // ===== REGISTER SUBMIT =====
+    // ===== REGISTER POST =====
     @PostMapping("/register")
     public String register(
-            @RequestParam("firstName")       String firstName,
-            @RequestParam("lastName")        String lastName,
-            @RequestParam("username")        String username,
-            @RequestParam("email")           String email,
-            @RequestParam("password")        String password,
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("username") String username,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
             @RequestParam("confirmPassword") String confirmPassword,
             Model model,
             RedirectAttributes redirectAttributes) {
 
         try {
-            // ✅ Validate passwords match
+            // Validate passwords
             if (!password.equals(confirmPassword)) {
                 model.addAttribute("error",
                         "Passwords do not match!");
                 return "auth/register";
             }
 
-            // ✅ Check username already exists
+            // Check username
             if (userService.existsByUsername(username)) {
                 model.addAttribute("error",
-                        "Username '" + username
-                                + "' is already taken. Try another!");
+                        "Username '" + username + "' already taken!");
                 return "auth/register";
             }
 
-            // ✅ Check email already exists
+            // Check email
             if (userService.existsByEmail(email)) {
                 model.addAttribute("error",
-                        "Email '" + email
-                                + "' is already registered!");
+                        "Email '" + email + "' already registered!");
                 return "auth/register";
             }
 
-            // ✅ Register the user
+            // Register
             userService.registerUser(
-                    firstName, lastName,
-                    username, email, password
+                    firstName, lastName, username, email, password
             );
 
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "🎉 Account created successfully! Please login."
+                    "Account created successfully! Please login."
             );
 
             return "redirect:/login?registered";

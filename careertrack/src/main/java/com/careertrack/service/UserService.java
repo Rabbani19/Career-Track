@@ -5,17 +5,20 @@ import com.careertrack.model.User;
 
 public interface UserService {
 
-    // Auth methods
-    void registerUser(String firstName, String lastName,
-                      String username, String email,
-                      String password);
+    // ✅ Register
+    void registerUser(
+            String firstName,
+            String lastName,
+            String username,
+            String email,
+            String password
+    );
 
+    // ✅ Checks
     boolean existsByUsername(String username);
-
     boolean existsByEmail(String email);
 
-    // Profile methods
+    // ✅ Profile
     User getCurrentUser(String username);
-
     void updateProfile(Long userId, UserDTO userDTO);
 }

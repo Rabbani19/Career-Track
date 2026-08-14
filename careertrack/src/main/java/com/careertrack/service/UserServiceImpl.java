@@ -27,6 +27,8 @@ public class UserServiceImpl implements UserService {
             String password) {
 
         User user = new User();
+
+        // ✅ Matches updated User.java fields
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setFullName(firstName + " " + lastName);
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(Role.USER);
-        user.setActive(true);
+        user.setActive(true);  // ✅ active not isActive
 
         userRepository.save(user);
     }
@@ -51,10 +53,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmail(email);
     }
 
-    // ✅ Get Current Logged In User
+    // ✅ Get Current User by username
     @Override
     public User getCurrentUser(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository
+                .findByUsername(username)
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "User not found: " + username));
@@ -63,43 +66,42 @@ public class UserServiceImpl implements UserService {
     // ✅ Update Profile
     @Override
     public void updateProfile(Long userId, UserDTO userDTO) {
-        User user = userRepository.findById(userId)
+        User user = userRepository
+                .findById(userId)
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
-        // Update fields
-        if (userDTO.getFullName() != null) {
+        if (userDTO.getFullName() != null)
             user.setFullName(userDTO.getFullName());
-        }
-        if (userDTO.getPhone() != null) {
+
+        if (userDTO.getPhone() != null)
             user.setPhone(userDTO.getPhone());
-        }
-        if (userDTO.getLocation() != null) {
+
+        if (userDTO.getLocation() != null)
             user.setLocation(userDTO.getLocation());
-        }
-        if (userDTO.getCurrentCompany() != null) {
+
+        if (userDTO.getCurrentCompany() != null)
             user.setCurrentCompany(
                     userDTO.getCurrentCompany());
-        }
-        if (userDTO.getCurrentRole() != null) {
+
+        if (userDTO.getCurrentRole() != null)
             user.setCurrentRole(userDTO.getCurrentRole());
-        }
-        if (userDTO.getExperienceYears() != null) {
+
+        if (userDTO.getExperienceYears() != null)
             user.setExperienceYears(
                     userDTO.getExperienceYears());
-        }
-        if (userDTO.getSkills() != null) {
+
+        if (userDTO.getSkills() != null)
             user.setSkills(userDTO.getSkills());
-        }
-        if (userDTO.getLinkedinUrl() != null) {
+
+        if (userDTO.getLinkedinUrl() != null)
             user.setLinkedinUrl(userDTO.getLinkedinUrl());
-        }
-        if (userDTO.getGithubUrl() != null) {
+
+        if (userDTO.getGithubUrl() != null)
             user.setGithubUrl(userDTO.getGithubUrl());
-        }
-        if (userDTO.getPortfolioUrl() != null) {
+
+        if (userDTO.getPortfolioUrl() != null)
             user.setPortfolioUrl(userDTO.getPortfolioUrl());
-        }
 
         userRepository.save(user);
     }
