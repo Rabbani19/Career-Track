@@ -25,6 +25,9 @@ public class InterviewServiceImpl
     private JobApplicationRepository
             jobApplicationRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public Interview scheduleInterview(
             InterviewDTO dto, User user) {
@@ -60,7 +63,19 @@ public class InterviewServiceImpl
                 .jobApplication(application)
                 .build();
 
-        return interviewRepository.save(interview);
+        Interview saved =
+                interviewRepository.save(interview);
+
+        // In-app notification
+        notificationService.createNotification(
+                user,
+                "Interview Scheduled",
+                "Interview with " + application.getCompanyName()
+                        + " (" + application.getJobRole() + ") "
+                        + "scheduled on " + saved.getInterviewDate() + ".",
+                "INTERVIEW_SCHEDULED");
+
+        return saved;
     }
 
     @Override

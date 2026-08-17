@@ -1,5 +1,6 @@
 package com.careertrack.repository;
 
+import com.careertrack.enums.InterviewStatus;
 import com.careertrack.model.Interview;
 import com.careertrack.model.JobApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +30,9 @@ public interface InterviewRepository
     @Query("SELECT COUNT(i) FROM Interview i " +
             "WHERE i.jobApplication.user.id = :userId")
     Long countByUserId(Long userId);
+
+    // Used by the reminder scheduler
+    List<Interview> findByInterviewDateAndStatus(
+            LocalDate interviewDate,
+            InterviewStatus status);
 }

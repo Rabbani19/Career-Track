@@ -51,6 +51,20 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="/ai">
+                        <i class="fas fa-robot"></i>
+                        AI Assistant
+                    </a>
+                </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" href="/admin">
+                        <i class="fas fa-shield-alt"></i>
+                        Admin
+                    </a>
+                </li>
+
             </ul>
 
             <!-- Right Side -->
@@ -63,7 +77,11 @@
                             <div class="notification-bell-icon">
                                 <i class="fas fa-bell"></i>
                             </div>
-                            <span class="notification-count">0</span>
+                            <span th:if="${unreadNotificationCount != null
+                    and unreadNotificationCount > 0}"
+                                  class="notification-count"
+                                  th:text="${unreadNotificationCount}">
+                             </span>
                         </div>
                     </a>
                 </li>

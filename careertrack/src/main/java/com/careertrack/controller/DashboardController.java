@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class DashboardController {
@@ -54,6 +55,11 @@ public class DashboardController {
                 interviewService
                         .getTotalInterviews(user);
 
+        // Monthly Timeline (Stage 6 - Analytics)
+        Map<String, Long> monthlyTimeline =
+                jobApplicationService
+                        .getMonthlyTimeline(user);
+
         model.addAttribute("user", user);
         model.addAttribute("stats", stats);
         model.addAttribute("recentApplications",
@@ -62,6 +68,8 @@ public class DashboardController {
                 upcomingInterviews);
         model.addAttribute("totalInterviews",
                 totalInterviews);
+        model.addAttribute("monthlyTimeline",
+                monthlyTimeline);
 
         return "dashboard";
     }

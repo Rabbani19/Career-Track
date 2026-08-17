@@ -8,8 +8,12 @@ import com.careertrack.repository.JobApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.YearMonth;
+import java.time.format.TextStyle;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -216,5 +220,44 @@ public class JobApplicationServiceImpl
     public Long getTotalApplications(User user) {
         return jobApplicationRepository
                 .countByUser(user);
+    }
+
+    // ================================
+    // TIMELINE (Stage 6 - Analytics)
+    // ================================
+    @Override
+    public Map<String, Long> getMonthlyTimeline(User user) {
+
+        List<JobApplication> applications =
+                jobApplicationRepository.findByUser(user);
+
+        Map<String, Long> timeline = new LinkedHashMap<>();
+
+        // Pre-fill last 6 months so empty months still show as 0
+        YearMonth current = YearMonth.now();
+        for (int i = 5; i >= 0; i--) {
+            YearMonth month = current.minusMonths(i);
+            String label = month.getMonth()
+                    .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+                    + " " + month.getYear();
+            timeline.put(label, 0L);
+        }
+
+        YearMonth cutoff = current.minusMonths(5);
+
+        for (JobApplication app : applications) {
+            if (app.getCreatedAt() == null) continue;
+
+            YearMonth appMonth = YearMonth.from(app.getCreatedAt());
+            if (appMonth.isBefore(cutoff)) continue;
+
+            String label = appMonth.getMonth()
+                    .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+                    + " " + appMonth.getYear();
+
+            timeline.merge(label, 1L, Long::sum);
+        }
+
+        return timeline;
     }
 }

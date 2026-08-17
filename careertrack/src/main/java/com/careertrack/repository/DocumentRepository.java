@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DocumentRepository
@@ -16,4 +17,6 @@ public interface DocumentRepository
 
     List<Document> findByUserAndDocumentType(
             User user, DocumentType documentType);
+
+    Optional<Document> findByIdAndUser(Long id, User user);
 }

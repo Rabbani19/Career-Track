@@ -3,15 +3,16 @@
    ============================================ */
 
 // ============================================
+// ============================================
 // Page Loader
 // ============================================
-window.addEventListener('load', function() {
+document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         const loader = document.getElementById('pageLoader');
         if (loader) {
             loader.classList.add('hidden');
         }
-    }, 1000);
+    }, 500);
 });
 
 // ============================================

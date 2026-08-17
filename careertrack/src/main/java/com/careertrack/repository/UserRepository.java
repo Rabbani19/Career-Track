@@ -1,5 +1,6 @@
 package com.careertrack.repository;
 
+import com.careertrack.enums.Role;
 import com.careertrack.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,14 +11,16 @@ import java.util.Optional;
 public interface UserRepository
         extends JpaRepository<User, Long> {
 
-    // ✅ Find by username
     Optional<User> findByUsername(String username);
 
-    // ✅ Find by email
     Optional<User> findByEmail(String email);
 
-    // ✅ Check exists
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    // Used by Admin dashboard
+    long countByActive(Boolean active);
+
+    long countByRole(Role role);
 }

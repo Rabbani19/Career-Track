@@ -59,4 +59,7 @@ public interface JobApplicationService {
 
     Long getTotalApplications(
             User user);
+
+    Map<String, Long> getMonthlyTimeline(
+            User user);
 }

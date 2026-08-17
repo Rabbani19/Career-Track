@@ -30,14 +30,16 @@
 
         /* ========== NAVBAR ========== */
         .navbar-custom {
-            background: rgba(10, 14, 46, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 15px 0;
+            background: linear-gradient(180deg, rgba(10, 14, 46, 0.55) 0%, rgba(10, 14, 46, 0.15) 80%, transparent 100%);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border-bottom: none;
+            padding: 20px 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .navbar-brand-text {
@@ -84,9 +86,16 @@
         }
 
         /* ========== HERO SECTION ========== */
+        /* ========== HERO SECTION ========== */
         .hero-section {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0a0e2e 0%, #0d1442 40%, #0a1628 100%);
+            background:
+                    linear-gradient(135deg, rgba(10, 14, 46, 0.90) 0%, rgba(13, 20, 66, 0.85) 45%, rgba(10, 22, 40, 0.90) 100%),
+                    url('/images/hero-image.png');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: scroll;
             display: flex;
             align-items: center;
             padding-top: 80px;
@@ -258,6 +267,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 420px;
         }
 
         .hero-image-glow {
@@ -575,18 +585,9 @@
                 </div>
             </div>
 
-            <!-- Right Image -->
+            <!-- Right Content -->
             <div class="col-lg-6 animate__animated animate__fadeInRight">
                 <div class="hero-image-wrapper">
-
-                    <!-- Glow Effect -->
-                    <div class="hero-image-glow"></div>
-
-                    <!-- Main Image -->
-                    <img src="/images/hero-image.png"
-                         alt="CareerTrack Dashboard"
-                         class="hero-main-image"
-                         onerror="this.style.display='none'">
 
                     <!-- Floating Stat Card 1 -->
                     <div class="stat-card stat-card-1">
@@ -767,8 +768,10 @@
     window.addEventListener('scroll', () => {
         const navbar = document.querySelector('.navbar-custom');
         if (window.scrollY > 50) {
+            navbar.style.background = 'rgba(10, 14, 46, 0.92)';
             navbar.style.boxShadow = '0 4px 30px rgba(0,0,0,0.3)';
         } else {
+            navbar.style.background = 'linear-gradient(180deg, rgba(10, 14, 46, 0.55) 0%, rgba(10, 14, 46, 0.15) 80%, transparent 100%)';
             navbar.style.boxShadow = 'none';
         }
     });

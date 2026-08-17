@@ -42,6 +42,8 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/error"
                         ).permitAll()
+                        // Admin-only URLs
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         // All others need auth
                         .anyRequest().authenticated()
                 )

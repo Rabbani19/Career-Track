@@ -260,16 +260,10 @@
                                        border:none;">
                                 <span class="badge"
                                       th:text="${app.status}"
-                                      th:classappend="
-                                      ${app.status.name() == 'APPLIED'}
-                                      ? 'badge-applied' :
-                                      ${app.status.name() == 'IN_REVIEW'}
-                                      ? 'badge-in-review' :
-                                      ${app.status.name() == 'SHORTLISTED'}
-                                      ? 'badge-shortlisted' :
-                                      ${app.status.name() == 'OFFERED'}
-                                      ? 'badge-offered' :
-                                      'badge-rejected'">
+                                      th:classappend="${app.status.name() == 'APPLIED' ? 'badge-applied' :
+                                        (app.status.name() == 'IN_REVIEW' ? 'badge-in-review' :
+                                        (app.status.name() == 'SHORTLISTED' ? 'badge-shortlisted' :
+                                        (app.status.name() == 'OFFERED' ? 'badge-offered' : 'badge-rejected')))}">
                                 </span>
                         </td>
 

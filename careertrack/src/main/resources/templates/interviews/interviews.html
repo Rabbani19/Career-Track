@@ -243,14 +243,9 @@
                                        border:none;">
                                 <span class="badge"
                                       th:text="${interview.status}"
-                                      th:classappend="
-                                      ${interview.status.name()
-                                      == 'SCHEDULED'} ? 'badge-scheduled' :
-                                      ${interview.status.name()
-                                      == 'COMPLETED'} ? 'badge-completed' :
-                                      ${interview.status.name()
-                                      == 'CANCELLED'} ? 'badge-cancelled' :
-                                      'badge-in-review'">
+                                      th:classappend="${interview.status.name() == 'SCHEDULED' ? 'badge-scheduled' :
+                                        (interview.status.name() == 'COMPLETED' ? 'badge-completed' :
+                                        (interview.status.name() == 'CANCELLED' ? 'badge-cancelled' : 'badge-in-review'))}">
                                 </span>
                         </td>
 
